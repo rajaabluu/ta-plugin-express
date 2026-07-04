@@ -32,7 +32,7 @@ components:
           example: test@mail.com
         password:
           type: string
-          example: password123
+          example: test 123
 
     RegisterRequest:
       type: object
@@ -189,6 +189,9 @@ components:
           data:
             type: object
             properties:
+              id:
+                type: integer
+                example: 2
               title:
                 type: string
                 example: Interstellar
@@ -212,6 +215,9 @@ components:
           data:
             type: object
             properties:
+              id:
+                type: integer
+                example: 2
               title:
                 type: string
                 example: Updated title
@@ -235,6 +241,9 @@ components:
           data:
             type: object
             properties:
+              id:
+                type: integer
+                example: 2
               title:
                 type: string
                 example: Interstellar
