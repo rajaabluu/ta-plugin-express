@@ -3,6 +3,7 @@ import cors from "cors";
 import apiRouter from "./routes/index";
 import swaggerUi from "swagger-ui-express";
 import yaml from "yamljs";
+import path from "path";
 
 import { env } from "./lib/config/env";
 
@@ -18,7 +19,8 @@ app.use(
 app.use(express.json());
 
 app.get("/", (req, res) => res.send("Hello World!"));
-const swaggerDocs = yaml.load("./src/docs/apispec.yaml");
+
+const swaggerDocs = yaml.load(path.join(__dirname, "docs", "apispec.yaml"));
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use("/api", apiRouter);
 

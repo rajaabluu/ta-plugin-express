@@ -6,7 +6,7 @@ info:
   description: REST API for Movie.
 
 servers:
-  - url: http://localhost:3000
+  - url: https://ta-plugin-express.vercel.app
 
 tags:
   - name: Auth
