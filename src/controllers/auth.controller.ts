@@ -12,26 +12,23 @@ import { env } from "../lib/config/env";
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
-    const result = await db
+    const [user] = await db
       .select()
       .from(users)
       .where(eq(users.email, email))
       .limit(1);
-    if (result.length == 0) {
+    if (!user) {
       return res.status(StatusCodes.UNAUTHORIZED).json({
-        message: "authorization failed",
-        error: {
-          code: "invalid_credentials",
-          message: "incorrect email or password",
-        },
+        code: "AUTH_INVALID_CREDENTIALS",
+        message: "incorrect email or password",
       });
     }
-    const user = result[0];
 
     const match = await bcrypt.compare(password, user?.password as string);
 
     if (!match) {
       return res.status(StatusCodes.UNAUTHORIZED).json({
+        code: "AUTH_INVALID_CREDENTIALS",
         message: "incorrect email or password",
       });
     }
@@ -46,11 +43,12 @@ export const login = async (req: Request, res: Response) => {
         id: user?.id,
         name: user?.name,
         email: user?.email,
-        access_token: token,
+        accessToken: token,
       },
     });
   } catch (err) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      code: "SERVER_ERROR",
       message: "an unexpected error occured in server",
     });
   }
@@ -60,19 +58,19 @@ export const register = async (req: Request, res: Response) => {
   try {
     const { name, email, password } = req.body;
 
-    const result = await db
+    const [existingUser] = await db
       .select()
       .from(users)
       .where(eq(users.email, email))
       .limit(1);
-    if (result.length > 0) {
+    if (existingUser) {
       return res.status(StatusCodes.CONFLICT).json({
-        message: "validation error",
+        message: "email validation error",
+        code: "VALIDATION_ERROR",
         errors: [
           {
             field: "email",
-            code: "duplicate_index",
-            message: "email telah digunakan user lain",
+            message: "email has been user by another user",
           },
         ],
       });
@@ -95,8 +93,9 @@ export const register = async (req: Request, res: Response) => {
       },
     });
   } catch (err) {
-    console.log(err);
+    console.error("error on register user: ", err);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      code: "SERVER_ERROR",
       message: "an unexpected error occured in server",
     });
   }

@@ -10,12 +10,12 @@ export const validate =
       const errors = result.error.issues.map((err) => {
         return {
           field: err.path.join(),
-          code: err.code,
           message: err.message,
         };
       });
       return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
         message: "validation error",
+        code: "VALIDATION_ERROR",
         errors,
       });
     }

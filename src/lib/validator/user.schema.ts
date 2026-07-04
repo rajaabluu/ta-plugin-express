@@ -4,18 +4,20 @@ export const RegisterSchema = z.object({
   name: z
     .string()
     .trim()
-    .min(1, { error: "nama harus diisi" })
-    .pipe(
-      z.string().min(3, { error: "nama terlalu pendek, minimal 3 karakter" }),
-    ),
-  email: z.email({ error: "format email tidak valid" }),
-  password: z
-    .string()
-    .trim()
-    .min(1, { error: "password harus diisi" })
+    .min(1, { error: "name is required" })
     .pipe(
       z
         .string()
-        .min(6, { error: "password terlalu pendek, minimal 6 karakter" }),
+        .min(3, { error: "name is too short, must be at least 3 character" }),
+    ),
+  email: z.email({ error: "email format is invalid" }),
+  password: z
+    .string()
+    .trim()
+    .min(1, { error: "password is required" })
+    .pipe(
+      z.string().min(6, {
+        error: "password is too short, must be at least 6 character",
+      }),
     ),
 });

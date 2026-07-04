@@ -1,28 +1,18 @@
 import multer from "multer";
-import path from "path";
 
-const storage = multer.diskStorage({
-  destination: "/src/uploads/",
-  filename: (req, file, callback) => {
-    callback(
-      null,
-      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`,
-    );
-  },
-});
+const storage = multer.memoryStorage();
+
+const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 
 export const upload = multer({
   storage,
-  fileFilter: (req, file, callback) => {
-    const fileTypes = /jpeg|jpg|png|gif/;
-    const extName = fileTypes.test(
-      path.extname(file.originalname).toLowerCase(),
-    );
-    const mimeType = fileTypes.test(file.mimetype);
-    if (extName && mimeType) {
+  limits: {
+    fileSize: 4 * 1024 * 1024,
+  },
+  fileFilter: (_, file, callback) => {
+    if (allowedMimeTypes.includes(file.mimetype)) {
       return callback(null, true);
-    } else {
-      callback(new Error("invalid image format!"));
     }
+    callback(new Error("Only image files are allowed."));
   },
 });

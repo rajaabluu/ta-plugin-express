@@ -1,16 +1,17 @@
 import z from "zod";
 
-export const MovieSchema = z.object({
-  title: z.string().trim().min(1, { error: "judul movie harus diisi" }),
-  director: z.string().trim().min(1, { error: "director harus diisi" }),
-  release_year: z
+export const AddMovieSchema = z.object({
+  title: z.string().trim().min(1, { error: "title is required" }),
+  director: z.string().trim().min(1, { error: "director is required" }),
+  releaseYear: z
     .string()
     .trim()
-    .min(1, { error: "tahun rilis harus diisi" })
+    .min(1, { error: "tahun rilis is required" })
     .refine((value) => !Number.isNaN(Number(value)), {
-      error: "Tahun rilis harus berupa angka",
+      error: "releaseYear value must be number",
     })
     .transform(Number),
   description: z.string().trim().optional(),
-  poster_url: z.string().trim(),
 });
+
+export const UpdateMovieSchema = AddMovieSchema.partial();

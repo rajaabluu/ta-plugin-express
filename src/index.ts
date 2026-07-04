@@ -1,8 +1,9 @@
 import express from "express";
 import cors from "cors";
 import apiRouter from "./routes/index";
+import swaggerUi from "swagger-ui-express";
+import yaml from "yamljs";
 
-import "dotenv/config";
 import { env } from "./lib/config/env";
 
 const PORT = env.PORT || 3000;
@@ -17,7 +18,12 @@ app.use(
 app.use(express.json());
 
 app.get("/", (req, res) => res.send("Hello World!"));
-
+const swaggerDocs = yaml.load("./src/docs/apispec.yaml");
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use("/api", apiRouter);
 
-app.listen(PORT, () => console.log("app started on http://localhost:3000"));
+if (env.NODE_ENV != "production") {
+  app.listen(PORT, () => console.log("app started on http://localhost:3000"));
+}
+
+export default app;
