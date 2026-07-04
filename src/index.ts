@@ -6,6 +6,7 @@ import yaml from "yamljs";
 import path from "path";
 
 import { env } from "./lib/config/env";
+import { readFileSync } from "fs";
 
 const PORT = env.PORT || 3000;
 const app = express();
@@ -20,8 +21,18 @@ app.use(express.json());
 
 app.get("/", (req, res) => res.send("Hello World!"));
 
+const cssPath = require.resolve("swagger-ui-dist/swagger-ui.css");
+const css = readFileSync(cssPath, "utf-8");
+
 const swaggerDocs = yaml.load(path.join(__dirname, "docs", "apispec.yaml"));
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.use(
+  "/docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocs, {
+    customCss: css,
+  }),
+);
+
 app.use("/api", apiRouter);
 
 if (env.NODE_ENV != "production") {
