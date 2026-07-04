@@ -6,7 +6,7 @@ export const AddMovieSchema = z.object({
   releaseYear: z
     .string()
     .trim()
-    .min(1, { error: "tahun rilis is required" })
+    .min(1, { error: "releaseYear is required" })
     .refine((value) => !Number.isNaN(Number(value)), {
       error: "releaseYear value must be number",
     })
